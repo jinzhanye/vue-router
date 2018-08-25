@@ -4,6 +4,8 @@ import Link from './components/link'
 export let _Vue
 
 export function install (Vue) {
+  // installed 标记确保 install 逻辑只执行一次
+  // 也就是说当开发者多次执行 Vue.use(VueRouter) 时，实际上只执行一次 install 逻辑
   if (install.installed && _Vue === Vue) return
   install.installed = true
 
@@ -22,8 +24,9 @@ export function install (Vue) {
     beforeCreate () {
       if (isDef(this.$options.router)) {
         this._routerRoot = this
-        this._router = this.$options.router
+        this._router = this.$options.router // VueRouter 的实例 router
         this._router.init(this)
+        // 将 _route 变成响应式对象
         Vue.util.defineReactive(this, '_route', this._router.history.current)
       } else {
         this._routerRoot = (this.$parent && this.$parent._routerRoot) || this

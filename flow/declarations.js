@@ -69,7 +69,7 @@ declare type RouteRecord = {
   components: Dictionary<any>;
   instances: Dictionary<any>;
   name: ?string;
-  parent: ?RouteRecord;
+  parent: ?RouteRecord; // 父的 RouteRecord
   redirect: ?RedirectOption;
   matchAs: ?string;
   beforeEnter: ?NavigationGuard;
@@ -97,7 +97,7 @@ declare type Route = {
   query: Dictionary<string>;
   params: Dictionary<string>;
   fullPath: string;
-  matched: Array<RouteRecord>;
+  matched: Array<RouteRecord>; // 表示匹配到的所有的 RouteRecord
   redirectedFrom?: string;
   meta?: any;
 }

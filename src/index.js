@@ -19,15 +19,15 @@ export default class VueRouter {
   static install: () => void;
   static version: string;
 
-  app: any;
-  apps: Array<any>;
+  app: any;// 保存根 Vue 实例
+  apps: Array<any>; // 保存所有子组件 Vue 实例
   ready: boolean;
   readyCbs: Array<Function>;
   options: RouterOptions;
   mode: string;
   history: HashHistory | HTML5History | AbstractHistory;
   matcher: Matcher;
-  fallback: boolean;
+  fallback: boolean; // 路由执行失败回调函数
   beforeHooks: Array<?NavigationGuard>;
   resolveHooks: Array<?NavigationGuard>;
   afterHooks: Array<?AfterNavigationHook>;

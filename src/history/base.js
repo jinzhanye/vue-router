@@ -62,7 +62,7 @@ export class History {
   }
 
   transitionTo (location: RawLocation, onComplete?: Function, onAbort?: Function) {
-    const route = this.router.match(location, this.current)
+    const route = this.router.match(location, this.current) // src/create-matcher.js
     this.confirmTransition(route, () => {
       this.updateRoute(route)
       onComplete && onComplete(route)

@@ -60,7 +60,7 @@ function addRouteRecord (
   }
 
   const pathToRegexpOptions: PathToRegexpOptions = route.pathToRegexpOptions || {}
-  const normalizedPath = normalizePath(
+  const normalizedPath = normalizePath( // 利用了path-to-regexp 这个工具库，把 path 解析成一个正则表达式的扩展，
     path,
     parent,
     pathToRegexpOptions.strict
