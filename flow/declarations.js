@@ -97,7 +97,7 @@ declare type Route = {
   query: Dictionary<string>;
   params: Dictionary<string>;
   fullPath: string;
-  matched: Array<RouteRecord>; // 表示匹配到的所有的 RouteRecord
+  matched: Array<RouteRecord>; // 非常重要的属性，表示匹配到的所有的 RouteRecord，通过 formatMatch(record) 计算
   redirectedFrom?: string;
   meta?: any;
 }

@@ -14,6 +14,7 @@ export class HashHistory extends History {
     if (fallback && checkFallback(this.base)) {
       return
     }
+    // 打开调试页面 http://localhost:8080 后会自动把 url 修改为 http://localhost:8080/#/，就是这一步
     ensureSlash()
   }
 
@@ -29,6 +30,8 @@ export class HashHistory extends History {
     }
 
     window.addEventListener(supportsPushState ? 'popstate' : 'hashchange', () => {
+      // 当点击浏览器返回按钮的时候，如果已经有 url 被压入历史栈，则会触发 popstate 事件，
+      // 然后拿到当前要跳转的 hash，执行 transtionTo 方法做一次路径转换。
       const current = this.current
       if (!ensureSlash()) {
         return
@@ -44,11 +47,12 @@ export class HashHistory extends History {
     })
   }
 
+  // 当我们点击 router-link 的时候，实际上最终会执行 router.push
   push (location: RawLocation, onComplete?: Function, onAbort?: Function) {
     const { current: fromRoute } = this
     this.transitionTo(location, route => {
       pushHash(route.fullPath)
-      handleScroll(this.router, route, fromRoute, false)
+      handleScroll(this.router, route, fromRoute, false) // 滚动条相关逻辑
       onComplete && onComplete(route)
     }, onAbort)
   }
@@ -88,7 +92,7 @@ function checkFallback (base) {
   }
 }
 
-function ensureSlash (): boolean {
+function ensureSlash (): boolean { // 确保第一位是斜线
   const path = getHash()
   if (path.charAt(0) === '/') {
     return true

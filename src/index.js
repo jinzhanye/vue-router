@@ -36,6 +36,7 @@ export default class VueRouter {
     this.app = null
     this.apps = []
     this.options = options
+    // 定义全局 hooks
     this.beforeHooks = []
     this.resolveHooks = []
     this.afterHooks = []
@@ -90,6 +91,7 @@ export default class VueRouter {
     this.apps.push(app)
 
     // main app already initialized.
+    // vue 支持多个 VueRouter 实例，但是 init 逻辑只执行一次
     if (this.app) {
       return
     }
@@ -104,14 +106,14 @@ export default class VueRouter {
       const setupHashListener = () => {
         history.setupListeners()
       }
-      history.transitionTo(
+      history.transitionTo(// transitionTo 执行过程中回调 setupHashListener
         history.getCurrentLocation(),
         setupHashListener,
         setupHashListener
       )
     }
 
-    history.listen(route => {
+    history.listen(route => { // 设置 history.cb，在 updateRoute 的时候会执行这个 cb
       this.apps.forEach((app) => {
         app._route = route
       })
@@ -137,7 +139,7 @@ export default class VueRouter {
   onError (errorCb: Function) {
     this.history.onError(errorCb)
   }
-
+  // 路由切换时调用 push
   push (location: RawLocation, onComplete?: Function, onAbort?: Function) {
     this.history.push(location, onComplete, onAbort)
   }

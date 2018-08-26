@@ -10,6 +10,7 @@ export function runQueue (queue: Array<?NavigationGuard>, fn: Function, cb: Func
           step(index + 1)
         })
       } else {
+        // ???
         step(index + 1)
       }
     }

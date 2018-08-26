@@ -43,6 +43,8 @@ export function pushState (url?: string, replace?: boolean) {
   // DOM Exception 18 where it limits to 100 pushState calls
   const history = window.history
   try {
+    // pushState 与 replaceState 的区别在于 pushState 会进入历史栈，而 replaceState 不会
+    // 当 localhost:8080 变化为 localhost:8080/#/ 时，是不需要进入历史栈的，会使用 replace
     if (replace) {
       history.replaceState({ key: _key }, '', url)
     } else {

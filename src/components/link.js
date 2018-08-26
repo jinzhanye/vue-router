@@ -31,6 +31,7 @@ export default {
   render (h: Function) {
     const router = this.$router
     const current = this.$route
+    // router.resolve 是 VueRouter 的实例方法，它的定义在 src/index.js ，进行路由解析
     const { location, route, href } = router.resolve(this.to, current, this.append)
 
     const classes = {}

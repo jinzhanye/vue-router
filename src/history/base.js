@@ -114,13 +114,13 @@ export class History {
 
     const queue: Array<?NavigationGuard> = [].concat(
       // in-component leave guards
-      extractLeaveGuards(deactivated),
+      extractLeaveGuards(deactivated), // 获取到的就是所有失活组件中定义的 beforeRouteLeave 钩子函数
       // global before hooks
       this.router.beforeHooks,
       // in-component update hooks
-      extractUpdateHooks(updated),
+      extractUpdateHooks(updated), // 获取到的就是所有重用的组件中定义的 beforeRouteUpdate 钩子函数
       // in-config enter guards
-      activated.map(m => m.beforeEnter),
+      activated.map(m => m.beforeEnter), // 获取的是在激活的路由配置中定义的 beforeEnter 函数
       // async components
       resolveAsyncComponents(activated)
     )
@@ -131,7 +131,7 @@ export class History {
         return abort()
       }
       try {
-        hook(route, current, (to: any) => {
+        hook(route, current, (to: any) => { // next 方法
           if (to === false || isError(to)) {
             // next(false) -> abort navigation, ensure current URL
             this.ensureURL(true)
@@ -152,7 +152,7 @@ export class History {
             }
           } else {
             // confirm transition and pass on the value
-            next(to)
+            next(to) // 只有执行 next 的时候，才会前进到下一个导航守卫钩子函数中
           }
         })
       } catch (e) {
@@ -160,14 +160,14 @@ export class History {
       }
     }
 
-    runQueue(queue, iterator, () => {
+    runQueue(queue, iterator, () => { // 遍历 queue ，执行里面的钩子函数，完毕下执行以下 callback
       const postEnterCbs = []
       const isValid = () => this.current === route
       // wait until async components are resolved before
       // extracting in-component enter guards
-      const enterGuards = extractEnterGuards(activated, postEnterCbs, isValid)
-      const queue = enterGuards.concat(this.router.resolveHooks)
-      runQueue(queue, iterator, () => {
+      const enterGuards = extractEnterGuards(activated, postEnterCbs, isValid) // 在被激活的组件里调用 beforeRouteEnter
+      const queue = enterGuards.concat(this.router.resolveHooks) // 提取全局的 beforeResolve 守卫
+      runQueue(queue, iterator, () => { // 递归执行 runQueue，调用全局的 beforeResolve 守卫，回调 onComplete
         if (this.pending !== route) {
           return abort()
         }
@@ -175,6 +175,8 @@ export class History {
         onComplete(route)
         if (this.router.app) {
           this.router.app.$nextTick(() => {
+            // 执行 beforeRouteEnter 的 next(()=> {}) 里面的 cb
+            // extractEnterGuards-bindEnterGuard 将 cb push 到 postEnterCbs
             postEnterCbs.forEach(cb => { cb() })
           })
         }
@@ -234,20 +236,25 @@ function resolveQueue (
   }
 }
 
+// 从 RouteRecord 数组中提取各个阶段的守卫
 function extractGuards (
   records: Array<RouteRecord>,
   name: string,
   bind: Function,
   reverse?: boolean
 ): Array<?Function> {
+  // flatMapComponents 拍平 Components ，处理命名视图
+  // https://router.vuejs.org/zh/guide/essentials/named-views.html#%E5%B5%8C%E5%A5%97%E5%91%BD%E5%90%8D%E8%A7%86%E5%9B%BE
   const guards = flatMapComponents(records, (def, instance, match, key) => {
     const guard = extractGuard(def, name)
     if (guard) {
       return Array.isArray(guard)
         ? guard.map(guard => bind(guard, instance, match, key))
-        : bind(guard, instance, match, key)
+        : bind(guard, instance, match, key) // bind 用于绑定 vm 上下文到守卫函数中
     }
   })
+  // 当 extractLeaveGuards 调用 extractGuards 时 reverse 为 true
+  // 因为需要将 deactive 先父后子 反转成先子后父
   return flatten(reverse ? guards.reverse() : guards)
 }
 

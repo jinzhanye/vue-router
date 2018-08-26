@@ -18,8 +18,9 @@ export default {
     // so that components rendered by router-view can resolve named slots
     const h = parent.$createElement
     const name = props.name
+    // 触发 _route 的 getter，install.js 中定义 Vue.util.defineReactive(this, '_route', this._router.history.current)
     const route = parent.$route
-    const cache = parent._routerViewCache || (parent._routerViewCache = {})
+    const cache = parent._routerViewCache || (parent._routerViewCache = {}) // keep alive 相关
 
     // determine current view depth, also check to see if the tree
     // has been toggled inactive but kept-alive.
@@ -59,7 +60,7 @@ export default {
         (val && current !== vm) ||
         (!val && current === vm)
       ) {
-        matched.instances[name] = val
+        matched.instances[name] = val // 记录当前路由对应的 vm 实例
       }
     }
 
