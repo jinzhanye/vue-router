@@ -15,7 +15,7 @@ import {
 export class History {
   router: Router;
   base: string;
-  current: Route;
+  current: Route; // 重要属性，指向当前路由
   pending: ?Route;
   cb: (r: Route) => void;
   ready: boolean;

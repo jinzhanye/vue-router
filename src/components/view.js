@@ -12,6 +12,7 @@ export default {
   },
   render (_, { props, children, parent, data }) {
     // used by devtools to display a router-view badge
+    // 这个属性非常重要，下面求 deep 值用到
     data.routerView = true
 
     // directly use parent context's createElement() function
@@ -20,7 +21,7 @@ export default {
     const name = props.name
     // 触发 _route 的 getter，install.js 中定义 Vue.util.defineReactive(this, '_route', this._router.history.current)
     const route = parent.$route
-    const cache = parent._routerViewCache || (parent._routerViewCache = {}) // keep alive 相关
+    const cache = parent._routerViewCache || (parent._routerViewCache = {})
 
     // determine current view depth, also check to see if the tree
     // has been toggled inactive but kept-alive.
@@ -42,7 +43,7 @@ export default {
       return h(cache[name], data, children)
     }
 
-    const matched = route.matched[depth]
+    const matched = route.matched[depth] // create-matcher.js / createRoute 函数构造 route 时保存 matched 数组
     // render empty node if no matched route
     if (!matched) {
       cache[name] = null
@@ -53,7 +54,7 @@ export default {
 
     // attach instance registration hook
     // this will be called in the instance's injected lifecycle hooks
-    data.registerRouteInstance = (vm, val) => {
+    data.registerRouteInstance = (vm, val) => {// install.js/ Vue.mix beforeCreate 时会调用这个函数保存 vm 实例
       // val could be undefined for unregistration
       const current = matched.instances[name]
       if (

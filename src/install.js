@@ -23,12 +23,12 @@ export function install (Vue) {
 
   Vue.mixin({
     beforeCreate () {
-      if (isDef(this.$options.router)) {
+      if (isDef(this.$options.router)) {// 根 vm 实例
         this._routerRoot = this // _routerRoot 也就是根 vm 实例
         this._router = this.$options.router // VueRouter 的实例 router
         this._router.init(this)
         // 将 _route 变成响应式对象
-        // 在每个 <router-view> 执行 render 函数的时候，都会访问 parent.$route，触发下面line 49 的 getter，相当于 <router-view> 对它有依赖，
+        // 在每个 <router-view> 执行 render 函数的时候，都会访问 parent.$route，触发下面line 49 的 getter，收集依赖
         // 然后再执行完 transitionTo 后，修改 index.js line 118 app._route 的时候，又触发了setter，因此会通知 <router-view> 的渲染 watcher 更新，重新渲染组件。
         Vue.util.defineReactive(this, '_route', this._router.history.current)
       } else { // 非根 vm

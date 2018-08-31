@@ -24,8 +24,8 @@ export function createMatcher (
   }
 
   function match (
-    raw: RawLocation,
-    currentRoute?: Route,
+    raw: RawLocation,// 新路由
+    currentRoute?: Route,// 旧路由
     redirectedFrom?: Location
   ): Route {
     const location = normalizeLocation(raw, currentRoute, false, router)
@@ -45,7 +45,7 @@ export function createMatcher (
         location.params = {}
       }
 
-      if (currentRoute && typeof currentRoute.params === 'object') {
+      if (currentRoute && typeof currentRoute.params === 'object') { // 参数处理
         for (const key in currentRoute.params) {
           if (!(key in location.params) && paramNames.indexOf(key) > -1) {
             location.params[key] = currentRoute.params[key]

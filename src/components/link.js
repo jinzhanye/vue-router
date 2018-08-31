@@ -117,7 +117,8 @@ function guardEvent (e) {
   }
   // this may be a Weex event which doesn't have this method
   if (e.preventDefault) {
-    e.preventDefault()
+      // 阻止点击 a 标签改变 url 的行为，在后续流程中计算路径后手动调用 pushState 改变 url
+      e.preventDefault()
   }
   return true
 }
