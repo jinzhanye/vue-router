@@ -27,7 +27,7 @@ export default class VueRouter {
   mode: string;
   history: HashHistory | HTML5History | AbstractHistory;
   matcher: Matcher;
-  fallback: boolean; // 路由执行失败回调函数
+  fallback: boolean;
   beforeHooks: Array<?NavigationGuard>;
   resolveHooks: Array<?NavigationGuard>;
   afterHooks: Array<?AfterNavigationHook>;
